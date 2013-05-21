@@ -1,0 +1,78 @@
+#!/bin/sh
+# Comments to support LSB init script conventions
+# chkconfig: 345 20 80
+# processname: freeswitch
+# description: freeswitch server
+### BEGIN INIT INFO
+# Provides: freeswitch
+# Default-Start:  2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop freeswitch
+# Description: freeswitch server
+### END INIT INFO
+
+basedir=/usr/local/freeswitch
+bindir=$basedir/bin
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:$basedir/bin
+export PATH
+
+ulimit -s 240
+ulimit -c unlimited
+    
+mode=$1    # start or stop
+    
+case `echo "testing\c"`,`echo -n testing` in
+    *c*,-n*) echo_n=   echo_c=     ;;
+    *c*,*)   echo_n=-n echo_c=     ;;
+    *)       echo_n=   echo_c='\c' ;;
+esac
+
+# Safeguard (relative paths, core dumps..)
+cd $basedir
+    
+case "$mode" in
+  'start')
+    # Start daemon
+
+    if test -x $bindir/freeswitch
+    then
+      /usr/bin/screen -d -m $bindir/freeswitch -db /usr/local/freeswitch/db -conf /usr/local/freeswitch/conf -log /var/log/br # JR -- actually -db is needed ...
+										# ./src/switch.c:		fprintf(stderr, "You must specify all or none of -conf, -log, and -db\n");
+      # Make lock for RedHat / SuSE
+      if test -w /var/lock/subsys
+      then
+        touch /var/lock/subsys/freeswitch
+      fi
+    else
+      echo "Can't execute $bindir/freeswitch from dir $basedir"
+    fi
+    ;;
+  
+  'stop')
+      $bindir/freeswitch -stop 
+      # delete lock for RedHat / SuSE
+      if test -f /var/lock/subsys/freeswitch
+      then 
+        rm -f /var/lock/subsys/freeswitch
+      fi
+    ;;
+  
+  'status')
+    /usr/bin/screen -list
+    ;;
+  'restart')
+    # Stop the service and regardless of whether it was
+    # running or not, start it again.
+    $0 stop
+    sleep 5
+    $0 start
+                ;;
+  
+  *)
+    # usage
+    echo "Usage: $0 start|stop|restart"
+    exit 1
+    ;;
+esac
+

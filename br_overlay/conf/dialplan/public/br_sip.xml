@@ -1,0 +1,36 @@
+<include>
+    <extension name="br_sip_entrance">
+        <condition field="destination_number" expression="^br_entrance$"/>
+        <condition field="${sofia_profile_name}" expression="^internal$">
+            <action application="set" data="BR-pin=${BR-dialin}"/>
+            <action application="set" data="BR-dialin=SIP"/>
+            <!--<action application="set" data="BR-ani=${ani}"/>-->
+            <action application="set" data="BR-cid="/>
+            <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/pin ${BR-pin}"/>
+            <action application="transfer" data="br_sip_check_cid XML public"/>
+        </condition>
+    </extension>
+
+    <extension name="br_sip_no_cid">
+        <!--
+        Somehow we have no cid, so this is an internal error (we should have been passed a 
+        pin which mapped to a valid cid.
+        -->
+        <condition field="destination_number" expression="^br_sip_check_cid$"/>
+        <condition field="${BR-cid}" expression="^$">
+            <!-- number of X's is the number of retries -->
+            <action application="set" data="br_retries=XXX"/>
+            <action application="transfer" data="br_lobby"/>
+        </condition>
+    </extension>
+
+    <extension name="br_sip_have_cid">
+        <condition field="destination_number" expression="^br_sip_check_cid$"/>
+        <condition field="${BR-cid}" expression="^(.+)$">
+            <action application="log" data="Connecting SIP to conference $1..."/>
+            <action application="transfer" data="br_conference"/>
+        </condition>
+    </extension>
+
+</include>
+

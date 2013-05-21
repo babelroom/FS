@@ -1,0 +1,20 @@
+<include>
+  <!--
+    Front-door, wipe variables from previous tries and see can we determine
+    pin from ANI (and hence cid) without any user entry
+
+    Note we want this step to be re-run on every retry as the system could
+    provision a phone number record on the system while the user is trying
+    to get in
+  -->
+  <extension name="br_frontdoor">
+    <condition field="destination_number" expression="^br_frontdoor$">
+      <action application="set" data="BR-cid="/>
+      <action application="set" data="BR-pin="/>
+      <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/phone ${BR-ani}"/>
+      <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/pin ${BR-pin}"/>
+      <action application="transfer" data="br_lobby"/>
+    </condition>
+  </extension>
+</include>
+

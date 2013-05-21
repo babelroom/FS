@@ -1,0 +1,15 @@
+<include>
+  <!--
+    1. looking to join a conference
+    2. have a cid (conference id)
+    therefore, you are admitted to the conference cid
+  -->
+  <extension name="br_conference">
+    <condition field="destination_number" expression="^br_conference$"/>
+    <condition field="${BR-cid}" expression="^\d+$">
+        <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/conference ${BR-cid}"/>
+        <action application="conference" data="${BR-cid}"/>
+    </condition>
+  </extension>
+</include>
+

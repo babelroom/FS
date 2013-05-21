@@ -1,0 +1,17 @@
+<!--
+<include>
+    <gateway name="netelip">
+      <param name="username" value="0000000000"/>
+      <param name="from-domain" value="sip.netelip.com"/>
+      <param name="password" value="aaaaaa"/>
+      <param name="extension" value="0000000000"/>
+      <param name="realm" value="sip.netelip.com"/>
+      <param name="proxy" value="sip.netelip.com"/>
+      <param name="expire-seconds" value="3600"/>
+      <param name="register" value="true"/>
+      <param name="retry-seconds" value="3600"/>
+      <param name="caller-id-in-from" value="true"/>
+    </gateway>
+</include>
+-->
+

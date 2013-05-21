@@ -1,0 +1,17 @@
+<include>
+  <user id="babel">
+    <params>
+      <param name="password" value="room"/>
+      <param name="vm-password" value="room"/>
+    </params>
+    <variables>
+      <variable name="accountcode" value="babel"/>
+      <variable name="user_context" value="default"/>
+      <variable name="effective_caller_id_name" value="Extension sip_caller"/>
+      <variable name="effective_caller_id_number" value="sip_caller"/>
+      <variable name="outbound_caller_id_name" value="$${outbound_caller_name}"/>
+      <variable name="outbound_caller_id_number" value="$${outbound_caller_id}"/>
+      <variable name="callgroup" value="techsupport"/>
+    </variables>
+  </user>
+</include>

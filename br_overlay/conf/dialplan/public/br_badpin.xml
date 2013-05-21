@@ -1,0 +1,18 @@
+<include>
+  <!--
+    1. looking to join a conference
+    2. no cid
+    3. but retries left
+    => play bad pid msg, transfer back to frontdoor
+  -->
+  <extension name="br_badpin">
+    <condition field="destination_number" expression="^br_conference$"/>
+    <condition field="${BR-cid}" expression="^$"/>
+    <condition field="${br_retries}" expression="^.+$">
+      <action application="playback" data="$${base_dir}/sounds/en/us/callie/conference/8000/conf-bad-pin.wav"/>
+      <action application="phrase" data="spell,${BR-pin}"/>
+      <action application="transfer" data="br_frontdoor"/>
+    </condition>
+  </extension>
+</include>
+

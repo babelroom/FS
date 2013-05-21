@@ -1,0 +1,39 @@
+Note other configuration changes
+- note wanchai has customized scripts that actually help freeswitch do /etc/init.d stuff properly (but note restart doesn't work too well)
+
+
+
+Overlay this way:
+$ cp -a * /usr/local/freeswitch/
+$ rm /usr/local/freeswitch/README
+
+
+
+
+Modify these things:
+
+(*) Modify ACL's to allow inbound/outbound SIP as required:
+    Open /usr/local/freeswitch/conf/autoload_configs/acl.conf.xml and modify, for example:
+
+    with an error message of:
+2011-01-25 17:36:43.000266 [DEBUG] sofia.c:6414 IP 70.167.153.130 Rejected by acl "domains". Falling back to Digest auth.
+2011-01-25 17:36:43.005267 [WARNING] sofia_reg.c:1247 SIP auth challenge (INVITE) on sofia profile 'internal' for [+14155550101@216.115.69.132] from ip 70.167.153.130
+
+    add an entry like:
+
+      <node type="allow" cidr="70.167.153.130/1"/>
+
+    in the "domains" list
+
+
+(*) conf/vars.xml
+
+    change the password away from the default
+  <X-PRE-PROCESS cmd="set" data="default_password=1234">
+  <X-PRE-PROCESS cmd="set" data="default_password=0000000000000"/>
+
+(*) conf/vars.xml
+    
+    update the codec negotiation preferences
+
+

@@ -1,0 +1,35 @@
+<include>
+    <extension name="br_webcall_entrance">
+        <condition field="destination_number" expression="^br_entrance$"/>
+        <condition field="${rtmp_u__CS-pin}" expression="^(.+)$">
+            <action application="set" data="BR-pin=$1"/>
+            <action application="set" data="BR-dialin=WebCall"/>
+            <action application="set" data="BR-ani=${rtmp_remote_address}"/>
+            <action application="set" data="BR-cid="/>
+            <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/pin ${BR-pin}"/>
+            <action application="transfer" data="br_webcall_check_cid XML public"/>
+        </condition>
+    </extension>
+
+    <extension name="br_webcall_no_cid">
+        <!--
+        Somehow we have no cid, so this is an internal error (we should have been passed a 
+        pin which mapped to a valid cid.
+        -->
+        <condition field="destination_number" expression="^br_webcall_check_cid$"/>
+        <condition field="${BR-cid}" expression="^$">
+            <action application="log" data="INFO no cid for outbound channel"/>
+            <action application="hangup" data="Internal error (no cid)"/>
+        </condition>
+    </extension>
+
+    <extension name="br_webcall_have_cid">
+        <condition field="destination_number" expression="^br_webcall_check_cid$"/>
+        <condition field="${BR-cid}" expression="^(.+)$">
+            <action application="log" data="Connecting WebCall to conference $1..."/>
+            <action application="transfer" data="br_conference"/>
+        </condition>
+    </extension>
+
+</include>
+

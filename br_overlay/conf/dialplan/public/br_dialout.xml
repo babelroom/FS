@@ -1,0 +1,38 @@
+<include>
+    <extension name="br_dialout_entrance">
+        <condition field="destination_number" expression="^br_entrance$"/>
+        <condition field="${direction}" expression="^outbound$">
+            <action application="set" data="BR-ani=${caller_id_number}"/>
+            <action application="set" data="BR-dialin=Outbound"/>
+            <action application="set" data="BR-cid="/>
+            <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/pin ${BR-pin}"/>
+            <action application="transfer" data="br_dialout_check_cid XML public"/>
+        </condition>
+    </extension>
+
+    <extension name="br_dialout_no_cid">
+        <!--
+        Somehow we have no cid, so this is an internal error (we should have been passed a 
+        pin which mapped to a valid cid. Hangup as quickly as possible, hopefully before 
+        the outbound phone rings
+        -->
+        <condition field="destination_number" expression="^br_dialout_check_cid$"/>
+        <condition field="${BR-cid}" expression="^$">
+            <action application="log" data="INFO no cid for outbound channel"/>
+            <action application="hangup" data="Internal error (no cid)"/>
+        </condition>
+    </extension>
+
+    <extension name="br_dialout_have_cid">
+        <condition field="destination_number" expression="^br_dialout_check_cid$"/>
+        <condition field="${BR-cid}" expression="^.+$">
+            <action application="log" data="INFO Waiting 30 seconds for ${BR-ani} to answer..."/>
+            <action application="set" data="execute_on_answer=transfer br_conference XML public"/>
+            <action application="sleep" data="30000"/>
+            <action application="log" data="INFO Call to ${ani} was not answered, hanging up ..."/>
+            <action application="hangup" data="No answer"/>
+        </condition>
+    </extension>
+
+</include>
+

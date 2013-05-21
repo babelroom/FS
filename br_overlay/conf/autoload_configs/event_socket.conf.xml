@@ -1,0 +1,14 @@
+<configuration name="event_socket.conf" description="Socket Client">
+  <settings>
+    <param name="nat-map" value="false"/>
+    <param name="listen-ip" value="127.0.0.1"/>
+    <param name="listen-port" value="8021"/>
+
+    <!-- modified for BR, JR 1/2012
+        <param name="password" value="ClueCon"/>-->
+    <param name="password" value="jjj"/><!-- bound to localhost, VPN or behind firewall -->
+    <!-- end mod. -->
+
+    <!--<param name="apply-inbound-acl" value="lan"/>-->
+  </settings>
+</configuration>

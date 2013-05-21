@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    NOTICE:
+
+    BabelRoom outbound
+
+    Smile, it only gets better ... :-)
+    
+-->
+<!-- http://wiki.freeswitch.org/wiki/Dialplan_XML -->
+<include>
+  <context name="br-outbound">
+
+    <!-- a sample IVR  -->
+    <extension name="br_ivr">
+      <condition field="destination_number" expression="^br_ivr$">
+        <action application="answer"/>
+        <action application="sleep" data="500"/>
+        <action application="ivr" data="br_ivr"/>
+      </condition>
+    </extension>
+
+    <extension name="record_a_msg">
+      <condition field="destination_number" expression="^7001$">
+        <action application="set" data="RECORD_TITLE=Recording ${destination_number} ${caller_id_number} ${strftime(%Y-%m-%d %H:%M)}"/>
+        <action application="set" data="RECORD_COPYRIGHT=(c) 1980 Factory Records, Inc."/>
+        <action application="set" data="RECORD_SOFTWARE=FreeSWITCH"/>
+        <action application="set" data="RECORD_ARTIST=Ian Curtis"/>
+        <action application="set" data="RECORD_COMMENT=Love will tear us apart"/>
+        <action application="set" data="RECORD_DATE=${strftime(%Y-%m-%d %H:%M)}"/>
+        <action application="set" data="RECORD_STEREO=true"/>
+        <!--<action application="record_session" data="$${base_dir}/recordings/${strftime(%Y-%m-%d-%H-%M-%S)}_${destination_number}_${caller_id_number}.wav"/>-->
+        <action application="record_session" data="/br_media/ob_recordings/${uuid}.wav"/>
+<!--
+        <action application="set" data="ringback=${us-ring}"/>
+        <action application="bridge" data="sofia/external/18007842433@sip.voip-provider.com"/>
+-->
+        <action application="lua" data="write_br_ivr.lua /br_media/ob_data"/>
+        <action application="sleep" data="50000"/>
+      </condition>
+    </extension>
+
+    <extension name="done">
+      <condition field="destination_number" expression="^7099$">
+        <action application="playback" data="voicemail/vm-goodbye.wav"/>
+        <action application="lua" data="write_br_ivr.lua /br_media/ob_data"/>
+        <action application="hangup"/>
+      </condition>
+    </extension>
+
+  </context>
+</include>
+

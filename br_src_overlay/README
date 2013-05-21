@@ -1,0 +1,5 @@
+
+overlay this onto a fresh pull from freeswitch git. 
+
+then ./bootstrap and continue to build as usual
+

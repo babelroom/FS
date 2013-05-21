@@ -1,0 +1,43 @@
+<configuration name="acl.conf" description="Network Lists">
+  <network-lists>
+    <!-- 
+	 These ACL's are automatically created on startup.
+
+	 rfc1918.auto  - RFC1918 Space
+	 nat.auto      - RFC1918 Excluding your local lan.
+	 localnet.auto - ACL for your local lan.
+	 loopback.auto - ACL for your local lan.
+    -->
+
+    <list name="lan" default="allow">
+      <node type="deny" cidr="192.168.42.0/24"/>
+      <node type="allow" cidr="192.168.42.42/32"/>
+    </list>
+
+    <!--
+	This will traverse the directory adding all users 
+	with the cidr= tag to this ACL, when this ACL matches
+	the users variables and params apply as if they 
+	digest authenticated.
+    -->
+    <list name="domains" default="deny">
+      <!-- domain= is special it scans the domain from the directory to build the ACL -->
+      <node type="allow" domain="$${domain}"/>
+      <!-- use cidr= if you wish to allow ip ranges to this domains acl. -->
+      <!-- <node type="allow" cidr="192.168.0.0/24"/> -->
+
+
+      <!-- JR: for BabelRoom: add a record like the following to open access to specific SIP providers
+      <node type="allow" cidr="70.167.153.130/1"/>
+      -->
+
+      <node type="allow" cidr="70.167.153.130/1"/><!-- flowroute -->
+      <node type="allow" cidr="204.9.161.164/1"/><!-- skype -->
+<!--
+      <node type="allow" cidr="205.186.165.183/1"/>< ! -- pbx.babelroom.com -->
+
+    </list>
+
+  </network-lists>
+</configuration>
+

@@ -1,0 +1,18 @@
+<include>
+  <!--
+    Conditions (in english):
+    1. looking to join a conference
+    2. no cid (conference id)
+    3. no retries 
+    therefore, => you're dropped!
+  -->
+  <extension name="br_hangup">
+    <condition field="destination_number" expression="^br_conference$"/>
+    <condition field="${BR-cid}" expression="^$"/>
+    <condition field="${br_retries}" expression="^$">
+      <action application="playback" data="$${base_dir}/sounds/en/us/callie/conference/8000/conf-goodbye.wav"/>
+      <action application="hangup"/>
+    </condition>
+  </extension>
+</include>
+

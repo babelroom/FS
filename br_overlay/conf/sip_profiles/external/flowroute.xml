@@ -1,0 +1,17 @@
+<!--
+<include>
+    <gateway name="flowroute">
+        <param name="username" value="00000000"/>
+        <param name="from-domain" value="sip.flowroute.com"/>
+        <param name="password" value="aaaaaaaaaaaa"/>
+        <param name="extension" value="14155550101"/>
+        <param name="realm" value="sip.flowroute.com"/>
+        <param name="proxy" value="sip.flowroute.com"/>
+        <param name="expire-seconds" value="3600"/>
+        <param name="register" value="true"/>
+        <param name="retry-seconds" value="3600"/>
+        <param name="caller-id-in-from" value="true"/>
+    </gateway>
+</include>
+-->
+

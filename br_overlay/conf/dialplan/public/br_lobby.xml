@@ -1,0 +1,21 @@
+<include>
+  <!--
+    1. in lobby
+    2. no cid
+    3. retries remain
+    therefore, you get to enter a pin then get transferred to br_conference to see if you
+    can be admitted to conference
+  -->
+  <extension name="br_lobby">
+    <condition field="destination_number" expression="^br_lobby$"/>
+    <condition field="${BR-cid}" expression="^$"/>
+    <condition field="${br_retries}" expression="^.(.*)$">
+      <action application="set" data="br_retries=$1"/>
+      <action application="sleep" data="1"/>
+      <action application="read" data="6 6 $${base_dir}/sounds/en/us/callie/conference/8000/conf-pin.wav BR-pin 10000 #,*"/>
+      <action application="lua" data="read_br_kv.lua  ${BR-estream_path}/pin ${BR-pin}"/>
+      <action application="transfer" data="br_conference"/>
+    </condition>
+  </extension>
+</include>
+

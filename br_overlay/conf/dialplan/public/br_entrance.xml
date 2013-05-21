@@ -1,0 +1,65 @@
+<include>
+
+    <!-- master entrance, set common variables -->
+    <extension name="br_entrance">
+        <!-- set internal variables in 1 place only -->
+        <condition field="${BR-conference}" expression="^$">
+            <action application="set" data="BR-dialin=${destination_number}"/>
+            <action application="set" data="BR-conference=true"/>
+            <action application="set" data="BR-estream_path=/var/estream/data/fs_map"/>
+            <action application="transfer" data="br_entrance XML public"/>
+        </condition>
+    </extension>
+
+    <!-- inbound only -->
+    <extension name="br_inbound_entrance">
+        <!--
+        Answer all incoming calls and direct them to the br frontdoor
+        1. we only go thru this step once so set retries and other data here
+        -->
+        <condition field="${rtmp_u__CS-pin}" expression="^$"/>
+        <condition field="${sofia_profile_name}" expression="^external$"/>
+        <condition field="${direction}" expression="^inbound$"/>
+        <condition field="destination_number" expression="^br_entrance$">
+
+            <!--
+            Inspect ANI
+            -->
+<!--
+still developing this ...
+
+            <condition field="ani" expression="^(\+?1)?(8(00|22|33|44|55|66|77|8[0-9])\d{7})$">
+                <action application="set" data="br_inbound_type=tollfree"/>
+            </condition>
+
+
+    <condition field="ani" expression="^\+(1|2[1-689]\d|2[07]|3[0-469]|3[578]\d|4[0-13-9]|42\d|5[09]\d|5[1-8]|6[0-6]|6[7-9]\d|7|8[035789]\d|8[1246]|9[0-58]|9[679]\d)(\d+)">
+     <action application="set" data="country_code=$1"/>
+     <action application="set" data="national_number=$2"/>
+    </condition>
+-->
+
+            <!--
+            Answer and allow time for the announcement to be played
+            -->
+            <action application="answer"/>
+            <action application="sleep" data="1500"/>
+
+            <action application="set" data="BR-ani=${ani}"/>
+            <action application="set" data="BR-ani=${regex(${ani}|(\d{10})$|%1)}"/><!-- works for NA numbers only -->
+
+            <!--
+            The variable below is truncated by 1 character every time we
+            retry a pin, call hangup when empty, therefore its length
+            indicates # of retries
+            -->
+            <!-- number of X's is the number of retries -->
+            <action application="set" data="br_retries=XXX"/>
+
+            <!-- now off to the br lobby -->
+            <action application="transfer" data="br_frontdoor XML public"/>
+
+        </condition>
+    </extension>
+</include>
+

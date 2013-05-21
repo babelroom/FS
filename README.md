@@ -1,5 +1,4 @@
 FS
 ==
 
-BabelRoom copy of FreeSWITCH.
-
+BabelRoom copy of FreeSWITCH
