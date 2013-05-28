@@ -33,8 +33,6 @@
 
       <node type="allow" cidr="70.167.153.130/1"/><!-- flowroute -->
       <node type="allow" cidr="204.9.161.164/1"/><!-- skype -->
-<!--
-      <node type="allow" cidr="205.186.165.183/1"/>< ! -- pbx.babelroom.com -->
 
     </list>
 
