@@ -50,7 +50,9 @@ case "$mode" in
     ;;
   
   'stop')
-      $bindir/freeswitch -stop 
+      # $bindir/freeswitch -stop  # I've never seen this work
+      screen -r -X stuff `printf "shutdown\r"`  # this on the other hand is just fine
+
       # delete lock for RedHat / SuSE
       if test -f /var/lock/subsys/freeswitch
       then 
