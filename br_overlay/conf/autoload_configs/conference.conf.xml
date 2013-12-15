@@ -119,6 +119,7 @@
           even during silence.  dist-dtmf propagates dtmfs to all other members, but channel controls
 	  via dtmf will be disabled. -->
       <!--<param name="member-flags" value="waste"/>-->
+      <param name="conference-flags" value="video-floor-only"/>
       <!-- Name of the caller control group to use for this profile -->
       <param name="caller-controls" value="br-controls"/> -->
       <!-- TTS Engine to use -->
